@@ -1,5 +1,5 @@
 var alertplus = (function () {
-    var dialog = $("<div>").css("display", "none");
+    var dialog = $("<div>").css("display", "none").addClass('alertplus');
     var messageArea = $("<pre>");
     dialog.append($("<div>").append(messageArea).addClass("messagearea"));
     dialog.append($("<br>"));
@@ -47,6 +47,11 @@ var alertplus = (function () {
     }
 
     function showError(ex) {
+        if (typeof ex == "string") {
+            showAlert(ex);
+            return;
+        }
+
         var message;
         var details;
         if (ex.status === 500) {
@@ -57,6 +62,9 @@ var alertplus = (function () {
                 message = ex.message;
                 details = ex.totalStackTrace;
             }
+        } else if (ex.status && ex.statusText) {
+            message = ex.status + ": " + ex.statusText;
+            details = ex.responseText;
         } else {
             if (ex.message) {
                 if (ex.message.indexOf("<html>") >= 0) {
