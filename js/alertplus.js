@@ -1,9 +1,8 @@
 /*!
- * AlertPlus v0.1.0 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * AlertPlus v0.1.0 (https://github.com/crowmagnumb/alertplus)
+ * Copyright 2015 CrowMagnumb
+ * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
-
 var alertplus = (function () {
     var dialog = $("<div>").addClass("modal").addClass("fade").addClass("alertplus").attr("data-keyboard","true");
     dialog.appendTo('body');
