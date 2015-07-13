@@ -1,12 +1,9 @@
 /*!
- * AlertPlus v0.1.2 (https://github.com/crowmagnumb/alertplus)
+ * AlertPlus v0.1.3 (https://github.com/crowmagnumb/alertplus)
  * Copyright 2015 CrowMagnumb
  * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
 var alertplus = (function () {
-    //
-    // NOTE: attribute tabindex=-1 makes it so that the ESC key dismisses the dialog.
-    //
     var dialog = $("<div>").addClass("modal").addClass("fade").addClass("alertplus").attr("tabindex","-1");
     dialog.appendTo('body');
 
@@ -109,7 +106,7 @@ var alertplus = (function () {
         //
         // Various duck typings looking for a particular type of error objects.
         //
-        if (ex.responseJSON) {
+        if (ex.responseJSON && ! $.isEmptyObject(ex.responseJSON)) {
             if (ex.responseJSON.stack) {
                 displayError(ex.responseJSON.message, ex.responseJSON.stack);
             } else {
@@ -127,13 +124,15 @@ var alertplus = (function () {
         // this way a basic 500 error that is not JSON formatted will be assumed to be an informational
         // message with the message in responseText.
         //
-        if (ex.responseText) {
+        var rtNotEmpty = (ex.responseText && ex.responseText !== "{}");
+
+        if (rtNotEmpty) {
             displayError(ex.responseText);
             return;
         }
 
         if (ex.status && ex.statusText) {
-            displayError(ex.status + ": " + ex.statusText, ex.responseText);
+            displayError(ex.status + ": " + ex.statusText, rtNotEmpty ? ex.responseText : null);
             return;
         }
 
