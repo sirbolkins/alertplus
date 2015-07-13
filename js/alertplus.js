@@ -4,6 +4,9 @@
  * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
 var alertplus = (function () {
+    //
+    // NOTE: attribute tabindex=-1 makes it so that the ESC key dismisses the dialog.
+    //
     var dialog = $("<div>").addClass("modal").addClass("fade").addClass("alertplus").attr("tabindex","-1");
     dialog.appendTo('body');
 
