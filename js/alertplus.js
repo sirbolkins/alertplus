@@ -1,5 +1,5 @@
 /*!
- * AlertPlus v0.1.3 (https://github.com/crowmagnumb/alertplus)
+ * AlertPlus v0.1.4 (https://github.com/crowmagnumb/alertplus)
  * Copyright 2015 CrowMagnumb
  * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
@@ -131,7 +131,12 @@ var alertplus = (function () {
             return;
         }
 
-        if (ex.status && ex.statusText) {
+        //
+        // In some Ajax calls we can get status = 0 and statusText = "error". Not very helpful but
+        // it is all we have to go on in this case. So basically I can't just check for (ex.status)
+        // I need to check if it is defined.
+        //
+        if (ex.status !== undefined && ex.statusText) {
             displayError(ex.status + ": " + ex.statusText, rtNotEmpty ? ex.responseText : null);
             return;
         }
