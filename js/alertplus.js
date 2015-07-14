@@ -1,5 +1,5 @@
 /*!
- * AlertPlus v0.1.4 (https://github.com/crowmagnumb/alertplus)
+ * AlertPlus v0.1.5 (https://github.com/crowmagnumb/alertplus)
  * Copyright 2015 CrowMagnumb
  * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
@@ -107,11 +107,7 @@ var alertplus = (function () {
         // Various duck typings looking for a particular type of error objects.
         //
         if (ex.responseJSON && ! $.isEmptyObject(ex.responseJSON)) {
-            if (ex.responseJSON.stack) {
-                displayError(ex.responseJSON.message, ex.responseJSON.stack);
-            } else {
-                displayError(ex.responseJSON.message, ex.responseJSON.totalStackTrace);
-            }
+            displayError(ex.responseJSON.message, ex.responseJSON.stack);
             return;
         }
 
