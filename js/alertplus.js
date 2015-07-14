@@ -97,7 +97,11 @@ var alertplus = (function () {
             return;
         }
 
-        if  (ex instanceof Error) {
+        //
+        // This is true of Error objects or if you've just created your own to mirror it.
+        //
+        // if  (ex instanceof Error) {
+        if (ex.message && ex.stack) {
             displayError(ex.message, ex.stack);
             return;
         }
@@ -134,11 +138,6 @@ var alertplus = (function () {
         //
         if (ex.status !== undefined && ex.statusText) {
             displayError(ex.status + ": " + ex.statusText, rtNotEmpty ? ex.responseText : null);
-            return;
-        }
-
-        if (ex.message && ex.totalStackTrace) {
-            displayError(ex.message, ex.totalStackTrace);
             return;
         }
 
