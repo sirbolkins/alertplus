@@ -1,5 +1,5 @@
 /*!
- * AlertPlus v0.1.7 (https://github.com/crowmagnumb/alertplus)
+ * AlertPlus v0.1.8 (https://github.com/crowmagnumb/alertplus)
  * Copyright 2015 CrowMagnumb
  * Licensed under MIT (https://github.com/crowmagnumb/alertplus/blob/master/LICENSE)
  */
@@ -57,6 +57,26 @@ var alertplus = (function () {
         rightChev.toggle();
     });
     
+    //
+    // In case we used the confirm method followed by the alert method in immediate
+    // succession we need to pause for a split second to let the bootstrap take care of
+    // hiding the dialog properly so that we can use it again. Without this we can get stuck
+    // in an unusable state. Empirically I found that 500 milliseconds seems to be enough time
+    // while 300 milliseconds does not. Soooo, hopefully this works across OS'es, across browsers, etc.
+    //
+    var lastClick = 0;
+    var PAUSE_TIME = 500;
+    function maybeWait() {
+        var elapsed = (new Date()) - lastClick;
+        if (elapsed < PAUSE_TIME) {
+            return $.Deferred(function(dfd) {
+                setTimeout(dfd.resolve, PAUSE_TIME - elapsed);
+            });
+        } else {
+            return (new $.Deferred).resolve();
+        }
+    }
+    
     function reset() {
         //
         // Remove all possible other classes that could have been applied.
@@ -71,65 +91,71 @@ var alertplus = (function () {
     }
     
     function showConfirm(message, title, danger) {
-        reset();
-        
-        if (danger) {
-            titleDiv.addClass("alert-danger");
-            okButton.addClass("btn-danger");
-        } else {
-            titleDiv.addClass("alert-warning");
-        }
-        
-        messageArea.html( message );
-        if (!title) {
-            titleDiv.text("Confirm");
-        } else {
-            titleDiv.text(title);
-        }
-
-        var deferred = $.Deferred();
-        okButton.click(function(evt) {
-            deferred.resolve();
+        return maybeWait().then(function() {
+            reset();
+            
+            if (danger) {
+                titleDiv.addClass("alert-danger");
+                okButton.addClass("btn-danger");
+            } else {
+                titleDiv.addClass("alert-warning");
+            }
+            
+            messageArea.html( message );
+            if (!title) {
+                titleDiv.text("Confirm");
+            } else {
+                titleDiv.text(title);
+            }
+    
+            var deferred = $.Deferred();
+            okButton.click(function(evt) {
+                lastClick = new Date();
+                deferred.resolve();
+            });
+            
+            cancelButton.click(function(evt) {
+                lastClick = new Date();
+                deferred.reject();
+            });
+            
+            cancelButton.show();
+            dialog.modal('show');
+            
+            return deferred;
         });
-        
-        cancelButton.click(function(evt){
-            deferred.reject();
-        });
-        
-        cancelButton.show();
-        dialog.modal('show');
-        
-        return deferred;
     }
 
     function showAlert(message, details, title, dialogClass) {
-        reset();
-        
-        //
-        // Now add in the passed class.
-        //
-        if (dialogClass) {
-            titleDiv.addClass("alert-" + dialogClass);
-        } else {
-            titleDiv.addClass("alert-info");
-        }
+        maybeWait().then(function() {
+            reset();
+            
+            //
+            // Now add in the passed class.
+            //
+            if (dialogClass) {
+                titleDiv.addClass("alert-" + dialogClass);
+            } else {
+                titleDiv.addClass("alert-info");
+            }
 
-        if (details) {
-            leftChev.hide();
-            rightChev.show();
-            detailsButton.show();
-        }
+            if (details) {
+                leftChev.hide();
+                rightChev.show();
+                detailsButton.show();
+            }
 
-        if (!title) {
-            titleDiv.text("Information");
-        } else {
-            titleDiv.text(title);
-        }
+            if (!title) {
+                titleDiv.text("Information");
+            } else {
+                titleDiv.text(title);
+            }
 
-        messageArea.html( message );
-        detailsContent.html(details);
+            messageArea.html( message );
+            detailsContent.html(details);
 
-        dialog.modal('show');
+            dialog.modal('show');
+        })
     }
 
     function displayError(message, details) {
