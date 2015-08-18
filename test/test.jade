@@ -4,6 +4,14 @@ html
         link(rel='stylesheet', href='vendor/bootstrap/css/bootstrap.min.css')
         link(rel='stylesheet' href='../css/alertplus.css')
 
+    script.
+        function confirmIt(danger) {
+            alertplus.confirm('Are you sure you want to do that thing?', 'Doing the thing', danger)
+            .then(function() {
+                alertplus.alert("You went ahead and did the thing.");
+            });
+        }
+        
     body
         ul(style="list-style-type: none;")
             li
@@ -14,6 +22,10 @@ html
                 button.btn.btn-primary(onclick="alertplus.alert('You have a lot of details to look at', $('#bigdetails').html())") Big Details
             li
                 button.btn.btn-primary(onclick="alertplus.alert($('#bigdetails').html(), $('#bigdetails').html())") Big Message
+            li
+                button.btn.btn-primary(onclick="confirmIt(false)") Confirm
+            li
+                button.btn.btn-primary(onclick="confirmIt(true)") Confirm (dangerously)
             
         div#bigdetails(style="display: none;")
             p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at purus at sem aliquam fermentum id ut libero. Mauris luctus quam nisl, in malesuada felis lacinia ac. Nam eget suscipit nunc. Vivamus a diam ultrices, elementum ligula ac, egestas orci. Donec pulvinar auctor justo. Cras quis pharetra metus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
